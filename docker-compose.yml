@@ -1,0 +1,8 @@
+version: '3'
+services:
+  vibot-voice:
+    container_name: vibot-youtube
+    build: .
+    ports:
+      - "20000:8080"
+    restart: always
