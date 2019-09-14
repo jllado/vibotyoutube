@@ -1,6 +1,6 @@
 version: '3'
 services:
-  vibot-voice:
+  vibot-youtube:
     container_name: vibot-youtube
     build: .
     ports:
