@@ -24,6 +24,7 @@ class VideoUploader @Autowired constructor(
         requestRefreshToken(credentials)
         val accessToken = gateway.getAccessToken(credentials)
         val videoUrl = gateway.createVideo(accessToken, file.length(), data.toYoutubeCreateRequest())
+        LOGGER.info("Uploading video")
         gateway.uploadVideo(accessToken, videoUrl, file)
         LOGGER.info("Video uploaded")
     }
