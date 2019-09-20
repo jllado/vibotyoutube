@@ -31,7 +31,7 @@ class VideoUploader @Autowired constructor(
 
     fun create(request: CreateVideoRequest) {
         data = VideoData(request.title, request.description, request.keywords, request.category)
-        LOGGER.info("Video created")
+        LOGGER.info("Video created: {}", data)
     }
 
     private fun requestRefreshToken(credentials: ClientSecret) {
