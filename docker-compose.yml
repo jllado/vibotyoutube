@@ -1,6 +1,7 @@
 version: '3'
 services:
   vibot-youtube:
+    image: jllado-server:5000/vibot/vibot-youtube:latest
     container_name: vibot-youtube
     build: .
     ports:
