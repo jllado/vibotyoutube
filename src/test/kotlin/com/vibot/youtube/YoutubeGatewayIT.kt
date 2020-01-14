@@ -22,7 +22,7 @@ class YoutubeGatewayIT {
         val size = videoFile.length()
         assertThat(size, `is`(2971464L))
 
-        val credentials = getCredentialsWithRefreshToken()
+        val credentials = getCredentials()
         val accessToken = gateway.getAccessToken(credentials)
         assertThat(accessToken, startsWith("ya29."))
 
@@ -38,10 +38,10 @@ class YoutubeGatewayIT {
     @Ignore("First should get a valid auth token")
     @Test
     fun `given auth token should return refresh token`() {
-        val refreshToken = gateway.getRefreshToken(getCredentialsWithRefreshToken())
+        val refreshToken = gateway.getRefreshToken(getCredentials())
 
         assertThat(refreshToken, startsWith("1/"))
     }
 
-    private fun getCredentialsWithRefreshToken() = ObjectMapper().readValue(credentialsFile, ClientSecret::class.java)
+    private fun getCredentials() = ObjectMapper().readValue(credentialsFile, ClientSecret::class.java)
 }
