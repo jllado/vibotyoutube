@@ -1,7 +1,7 @@
 package com.vibot.youtube.api
 
 import com.vibot.youtube.Category
-import com.vibot.youtube.VideoUploader
+import com.vibot.youtube.Uploader
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.verify
@@ -28,11 +28,12 @@ class UploadVideoApiIT {
     private lateinit var mvc: MockMvc
 
     @MockBean
-    private lateinit var uploader: VideoUploader
+    private lateinit var uploader: Uploader
 
     @Test
     fun `given video data should upload video`() {
         val videoFile = UploadVideoApiIT::class.java.getResource("/video.mp4")
+        val thumbnailFile = UploadVideoApiIT::class.java.getResource("/thumbnail.png")
         val title = "any title"
         val description = "This is description"
         val category = "NEWS"
@@ -40,10 +41,11 @@ class UploadVideoApiIT {
 
         mvc.perform(post("/create").contentType(MediaType.APPLICATION_JSON_UTF8).content(post)).andExpect(status().isOk)
         mvc.perform(multipart("/upload")
-                .file(MockMultipartFile("video", "video.mp4", MediaType.APPLICATION_OCTET_STREAM_VALUE, videoFile.readBytes())))
+                .file(MockMultipartFile("video", "video.mp4", MediaType.APPLICATION_OCTET_STREAM_VALUE, videoFile.readBytes()))
+                .file(MockMultipartFile("thumbnail", "thumbnail.png", MediaType.APPLICATION_OCTET_STREAM_VALUE, thumbnailFile.readBytes())))
                 .andExpect(status().isOk)
 
-        verify(uploader).create(CreateVideoRequest(title, description, Category.NEWS, listOf("cool", "video", "other")))
-        verify(uploader).upload(File("video.mp4"))
+        verify(uploader).createVideo(CreateVideoRequest(title, description, Category.NEWS, listOf("cool", "video", "other")))
+        verify(uploader).uploadVideo(File("video.mp4"), File("thumbnail.png"))
     }
 }

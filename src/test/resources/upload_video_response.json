@@ -1,0 +1,54 @@
+{
+  "kind": "youtube#video",
+  "etag": "\"Fznwjl6JEQdo1MGvHOGaz_YanRU/teapyJ4CqsajgXnJ-12l8Ii_Hg8\"",
+  "id": "MmeMfc8gMZo",
+  "snippet": {
+    "publishedAt": "2020-01-16T05:00:37.000Z",
+    "channelId": "UC-T0zVchvJUTvvNXNGDflqA",
+    "title": "My video test",
+    "description": "This is description",
+    "thumbnails": {
+      "default": {
+        "url": "https://i.ytimg.com/vi/MmeMfc8gMZo/default.jpg",
+        "width": 120,
+        "height": 90
+      },
+      "medium": {
+        "url": "https://i.ytimg.com/vi/MmeMfc8gMZo/mqdefault.jpg",
+        "width": 320,
+        "height": 180
+      },
+      "high": {
+        "url": "https://i.ytimg.com/vi/MmeMfc8gMZo/hqdefault.jpg",
+        "width": 480,
+        "height": 360
+      }
+    },
+    "channelTitle": "Vibot Test",
+    "tags": [
+      "cool",
+      "video",
+      "other"
+    ],
+    "categoryId": "25",
+    "liveBroadcastContent": "none",
+    "localized": {
+      "title": "My video test",
+      "description": "This is description"
+    }
+  },
+  "status": {
+    "uploadStatus": "uploaded",
+    "privacyStatus": "public",
+    "license": "youtube",
+    "embeddable": true,
+    "publicStatsViewable": true
+  },
+  "statistics": {
+    "viewCount": "0",
+    "likeCount": "0",
+    "dislikeCount": "0",
+    "favoriteCount": "0",
+    "commentCount": "0"
+  }
+}

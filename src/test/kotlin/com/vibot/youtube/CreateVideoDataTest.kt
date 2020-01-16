@@ -8,7 +8,7 @@ import org.junit.Test
 
 class CreateVideoDataTest {
 
-    private val uploader = VideoUploader(YoutubeGateway(), CredentialsStorage())
+    private val uploader = Uploader(YoutubeGateway(), CredentialsStorage())
 
     @Test
     fun `given video request should create video data`() {
@@ -18,7 +18,7 @@ class CreateVideoDataTest {
         val keywords = listOf("any_key")
         val request = CreateVideoRequest(title, description, category, keywords)
 
-        uploader.create(request)
+        uploader.createVideo(request)
 
         assertThat(uploader.data, `is`(VideoData(title, description, keywords, category)))
     }

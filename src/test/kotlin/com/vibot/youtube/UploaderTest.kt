@@ -2,19 +2,18 @@ package com.vibot.youtube
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.vibot.youtube.binding.conf.ClientSecret
+import com.vibot.youtube.binding.response.Upload
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.doReturn
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 import java.io.File
 
 @RunWith(MockitoJUnitRunner::class)
-class VideoUploaderTest {
+class UploaderTest {
 
     @Mock
     private lateinit var gateway: YoutubeGateway
@@ -22,9 +21,10 @@ class VideoUploaderTest {
     private lateinit var credentialsStorage: CredentialsStorage
 
     @InjectMocks
-    private lateinit var uploader: VideoUploader
+    private lateinit var uploader: Uploader
 
-    private val videoFile = File(YoutubeGateway::class.java.getResource("/video.mp4").file)
+    private val videoFile = File(UploaderTest::class.java.getResource("/video.mp4").file)
+    private val thumbnailFile = File(UploaderTest::class.java.getResource("/thumbnail.png").file)
     private val videoTitle = "Test video"
     private val videoDescription = "This is description"
     private val videoKeywords = listOf("cool", "video", "other")
@@ -36,6 +36,7 @@ class VideoUploaderTest {
     @Before
     fun setUp() {
         uploader.data = videoData
+        doReturn(uploadVideoResponse()).`when`(gateway).uploadVideo(accessToken, videoUrl, videoFile)
     }
 
     @Test
@@ -44,10 +45,12 @@ class VideoUploaderTest {
         doReturn("any_refresh_token").`when`(gateway).getRefreshToken(getCredentials())
         doReturn(accessToken).`when`(gateway).getAccessToken(getCredentialsWithRefreshToken())
         doReturn(videoUrl).`when`(gateway).createVideo(accessToken, 2971464L, createVideoRequest(videoTitle, videoDescription, videoKeywords, videoCategory))
+        val videoId = "MmeMfc8gMZo"
 
-        uploader.upload(videoFile)
+        uploader.uploadVideo(videoFile, thumbnailFile)
 
         verify(gateway).uploadVideo(accessToken, videoUrl, videoFile)
+        verify(gateway).uploadThumbnail(accessToken, videoId, videoFile)
     }
 
     @Test
@@ -57,7 +60,7 @@ class VideoUploaderTest {
         doReturn(accessToken).`when`(gateway).getAccessToken(getCredentialsWithRefreshToken())
         doReturn(videoUrl).`when`(gateway).createVideo(accessToken, 2971464L, createVideoRequest(videoTitle, videoDescription, videoKeywords, videoCategory))
 
-        uploader.upload(videoFile)
+        uploader.uploadVideo(videoFile, thumbnailFile)
 
         verify(credentialsStorage).save(getCredentialsWithRefreshToken(), credentialsFile)
     }
@@ -68,12 +71,14 @@ class VideoUploaderTest {
         doReturn(accessToken).`when`(gateway).getAccessToken(getCredentialsWithRefreshToken())
         doReturn(videoUrl).`when`(gateway).createVideo(accessToken, 2971464L, createVideoRequest(videoTitle, videoDescription, videoKeywords, videoCategory))
 
-        uploader.upload(videoFile)
+        uploader.uploadVideo(videoFile, thumbnailFile)
 
         verify(gateway, never()).getRefreshToken(getCredentials())
     }
 
-    private fun getCredentials() = ObjectMapper().readValue(VideoUploaderTest::class.java.getResource("/client_secret.json"), ClientSecret::class.java)
+    private fun getCredentials() = ObjectMapper().readValue(UploaderTest::class.java.getResource("/client_secret.json"), ClientSecret::class.java)
 
-    private fun getCredentialsWithRefreshToken() = ObjectMapper().readValue(VideoUploaderTest::class.java.getResource("/client_secret_with_refresh_token.json"), ClientSecret::class.java)
+    private fun getCredentialsWithRefreshToken() = ObjectMapper().readValue(UploaderTest::class.java.getResource("/client_secret_with_refresh_token.json"), ClientSecret::class.java)
+
+    private fun uploadVideoResponse(): Upload = ObjectMapper().readValue(UploaderTest::class.java.getResource("/upload_video_response.json"), Upload::class.java)
 }

@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.io.File
 
 private const val USER_AGENT = "youtube-cmdline-uploadvideo-sample Google-API-Java-Client Google-HTTP-Java-Client/1.28.0 (gzip)"
+private const val YOUTUBE_UPLOAD_ENDPOINT = "https://www.googleapis.com/upload/youtube/v3"
 
 @Service
 class YoutubeGateway {
@@ -55,7 +56,7 @@ class YoutubeGateway {
 
     fun createVideo(accessToken: String, size: Long, request: Create): String {
         try {
-            val client = WebClient.builder().baseUrl("https://www.googleapis.com/upload/youtube/v3")
+            val client = WebClient.builder().baseUrl("$YOUTUBE_UPLOAD_ENDPOINT")
                     .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
                     .defaultHeader("Authorization", "Bearer $accessToken")
                     .defaultHeader("User-Agent", USER_AGENT)
@@ -89,6 +90,21 @@ class YoutubeGateway {
                     .defaultHeader("Content-Range", "bytes 0-${size - 1}/$size")
                     .build()
             return client.put().body(BodyInserters.fromResource(FileSystemResource(file))).retrieve().bodyToMono(Upload::class.java).block()!!
+        } catch (e: WebClientResponseException) {
+            throw buildError(e)
+        }
+    }
+
+    fun uploadThumbnail(accessToken: String, videoId: String, file: File): Upload {
+        try {
+            val client = WebClient.builder().baseUrl(YOUTUBE_UPLOAD_ENDPOINT)
+                    .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
+                    .defaultHeader("Authorization", "Bearer $accessToken")
+                    .defaultHeader("User-Agent", USER_AGENT)
+                    .build()
+            val url = "/thumbnails/set?videoId=$videoId"
+            val body = BodyInserters.fromResource(FileSystemResource(file))
+            return client.post().uri(url).body(body).retrieve().bodyToMono(Upload::class.java).block()!!
         } catch (e: WebClientResponseException) {
             throw buildError(e)
         }

@@ -1,6 +1,8 @@
 package com.vibot.youtube.binding.response;
 
 
+import java.util.List;
+
 public class Upload {
 
     private Snippet snippet;
@@ -9,6 +11,7 @@ public class Upload {
     private String id;
     private Status status;
     private Statistics statistics;
+    private List<Thumbnails> items;
 
     public Snippet getSnippet() {
         return snippet;
@@ -58,4 +61,11 @@ public class Upload {
         this.statistics = statistics;
     }
 
+    public List<Thumbnails> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Thumbnails> items) {
+        this.items = items;
+    }
 }

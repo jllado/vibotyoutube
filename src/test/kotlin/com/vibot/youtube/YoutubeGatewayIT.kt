@@ -5,6 +5,7 @@ import com.vibot.youtube.binding.conf.ClientSecret
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.startsWith
+import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertThat
 import org.junit.Ignore
 import org.junit.Test
@@ -18,6 +19,7 @@ class YoutubeGatewayIT {
     fun `should create video`() {
         val videoTitle = "My video test"
         val videoFile = File(YoutubeGateway::class.java.getResource("/video.mp4").file)
+        val thumbnailFile = File(YoutubeGateway::class.java.getResource("/thumbnail.png").file)
 
         val size = videoFile.length()
         assertThat(size, `is`(2971464L))
@@ -26,11 +28,14 @@ class YoutubeGatewayIT {
         val accessToken = gateway.getAccessToken(credentials)
         assertThat(accessToken, startsWith("ya29."))
 
-        val locationId = gateway.createVideo(accessToken, size, createVideoRequest(videoTitle, "This is description", listOf("cool", "video", "other"), Category.NEWS))
-        assertThat(locationId, containsString("upload_id"))
+        val videoLocationUrl = gateway.createVideo(accessToken, size, createVideoRequest(videoTitle, "This is description", listOf("cool", "video", "other"), Category.NEWS))
+        assertThat(videoLocationUrl, containsString("upload_id"))
 
-        val uploadResponse = gateway.uploadVideo(accessToken, locationId, videoFile)
-        assertThat(uploadResponse.snippet.title, `is`(videoTitle))
+        val uploadVideoResponse = gateway.uploadVideo(accessToken, videoLocationUrl, videoFile)
+        assertThat(uploadVideoResponse.snippet.title, `is`(videoTitle))
+
+        val uploadThumbnailResponse = gateway.uploadThumbnail(accessToken, uploadVideoResponse.id, thumbnailFile)
+        assertThat(uploadThumbnailResponse.items, hasSize(1))
     }
 
     //To get auth token
@@ -40,7 +45,7 @@ class YoutubeGatewayIT {
     fun `given auth token should return refresh token`() {
         val refreshToken = gateway.getRefreshToken(getCredentials())
 
-        assertThat(refreshToken, startsWith("1/"))
+        assertThat(refreshToken, startsWith("2/"))
     }
 
     private fun getCredentials() = ObjectMapper().readValue(credentialsFile, ClientSecret::class.java)

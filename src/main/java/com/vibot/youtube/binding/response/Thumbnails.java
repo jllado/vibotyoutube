@@ -9,6 +9,7 @@ public class Thumbnails {
     private Thumbnail primary;
     private Thumbnail medium;
     private Thumbnail high;
+    private Thumbnail standard;
 
     public Thumbnail getMedium() {
         return medium;
@@ -32,5 +33,13 @@ public class Thumbnails {
 
     public void setPrimary(Thumbnail primary) {
         this.primary = primary;
+    }
+
+    public Thumbnail getStandard() {
+        return standard;
+    }
+
+    public void setStandard(Thumbnail standard) {
+        this.standard = standard;
     }
 }

@@ -30,9 +30,9 @@ class CredentialsStorageTest {
 
     private fun createCredentialsFile(credentialsFile: File) {
         FileSystemUtils.deleteRecursively(credentialsFile)
-        val source = File(VideoUploaderTest::class.java.getResource("/client_secret.json").file)
+        val source = File(UploaderTest::class.java.getResource("/client_secret.json").file)
         FileSystemUtils.copyRecursively(source, credentialsFile)
     }
 
-    private fun getCredentialsWithRefreshToken() = ObjectMapper().readValue(VideoUploaderTest::class.java.getResource("/client_secret_with_refresh_token.json"), ClientSecret::class.java)
+    private fun getCredentialsWithRefreshToken() = ObjectMapper().readValue(UploaderTest::class.java.getResource("/client_secret_with_refresh_token.json"), ClientSecret::class.java)
 }
