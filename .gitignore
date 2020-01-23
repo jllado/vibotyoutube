@@ -3,6 +3,7 @@ HELP.md
 build/
 client_secret.json
 .youtube_client_secret.json
+.youtube_client_secret.json.bkp
 /*.mp4
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**

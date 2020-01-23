@@ -50,7 +50,19 @@ class UploaderTest {
         uploader.uploadVideo(videoFile, thumbnailFile)
 
         verify(gateway).uploadVideo(accessToken, videoUrl, videoFile)
-        verify(gateway).uploadThumbnail(accessToken, videoId, videoFile)
+    }
+
+    @Test
+    fun `should upload thumbnail`() {
+        doReturn(getCredentials()).`when`(credentialsStorage).get(credentialsFile)
+        doReturn("any_refresh_token").`when`(gateway).getRefreshToken(getCredentials())
+        doReturn(accessToken).`when`(gateway).getAccessToken(getCredentialsWithRefreshToken())
+        doReturn(videoUrl).`when`(gateway).createVideo(accessToken, 2971464L, createVideoRequest(videoTitle, videoDescription, videoKeywords, videoCategory))
+        val videoId = "MmeMfc8gMZo"
+
+        uploader.uploadVideo(videoFile, thumbnailFile)
+
+        verify(gateway).uploadThumbnail(accessToken, videoId, thumbnailFile)
     }
 
     @Test

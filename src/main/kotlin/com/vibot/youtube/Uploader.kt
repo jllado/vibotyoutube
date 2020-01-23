@@ -19,16 +19,16 @@ class Uploader @Autowired constructor(
 
     lateinit var data: VideoData
 
-    fun uploadVideo(file: File, thumbnailFile: File) {
+    fun uploadVideo(videoFile: File, thumbnailFile: File) {
         val credentials = getCredentials()
         requestRefreshToken(credentials)
         val accessToken = gateway.getAccessToken(credentials)
-        val videoUrl = gateway.createVideo(accessToken, file.length(), data.toYoutubeCreateRequest())
+        val videoUrl = gateway.createVideo(accessToken, videoFile.length(), data.toYoutubeCreateRequest())
         LOGGER.info("Uploading video")
-        val videoUploadResponse = gateway.uploadVideo(accessToken, videoUrl, file)
+        val videoUploadResponse = gateway.uploadVideo(accessToken, videoUrl, videoFile)
         LOGGER.info("Video uploaded")
         LOGGER.info("Uploading thumbnail")
-        gateway.uploadThumbnail(accessToken, videoUploadResponse.id, file)
+        gateway.uploadThumbnail(accessToken, videoUploadResponse.id, thumbnailFile)
         LOGGER.info("Thumbnail uploaded")
         LOGGER.info("Video upload completed")
     }
