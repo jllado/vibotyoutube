@@ -24,13 +24,26 @@ class Uploader @Autowired constructor(
         requestRefreshToken(credentials)
         val accessToken = gateway.getAccessToken(credentials)
         val videoUrl = gateway.createVideo(accessToken, videoFile.length(), data.toYoutubeCreateRequest())
-        LOGGER.info("Uploading video")
-        val videoUploadResponse = gateway.uploadVideo(accessToken, videoUrl, videoFile)
-        LOGGER.info("Video uploaded")
-        LOGGER.info("Uploading thumbnail")
-        gateway.uploadThumbnail(accessToken, videoUploadResponse.id, thumbnailFile)
-        LOGGER.info("Thumbnail uploaded")
+        val videoId = uploadVideo(accessToken, videoUrl, videoFile)
+        uploadThumbnail(accessToken, videoId, thumbnailFile)
         LOGGER.info("Video upload completed")
+    }
+
+    private fun uploadThumbnail(accessToken: String, videoId: String, thumbnailFile: File) {
+        try {
+            LOGGER.info("Uploading thumbnail")
+            gateway.uploadThumbnail(accessToken, videoId, thumbnailFile)
+            LOGGER.info("Thumbnail uploaded")
+        } catch (e: Exception) {
+            LOGGER.error("Thumbnail uploaded failed", e)
+        }
+    }
+
+    private fun uploadVideo(accessToken: String, videoUrl: String, videoFile: File): String {
+        LOGGER.info("Uploading video")
+        val response = gateway.uploadVideo(accessToken, videoUrl, videoFile)
+        LOGGER.info("Video uploaded")
+        return response.id
     }
 
     fun createVideo(request: CreateVideoRequest) {

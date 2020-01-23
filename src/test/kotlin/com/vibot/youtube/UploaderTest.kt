@@ -6,11 +6,13 @@ import com.vibot.youtube.binding.response.Upload
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 import java.io.File
+import java.lang.IllegalStateException
 
 @RunWith(MockitoJUnitRunner::class)
 class UploaderTest {
@@ -45,7 +47,20 @@ class UploaderTest {
         doReturn("any_refresh_token").`when`(gateway).getRefreshToken(getCredentials())
         doReturn(accessToken).`when`(gateway).getAccessToken(getCredentialsWithRefreshToken())
         doReturn(videoUrl).`when`(gateway).createVideo(accessToken, 2971464L, createVideoRequest(videoTitle, videoDescription, videoKeywords, videoCategory))
+
+        uploader.uploadVideo(videoFile, thumbnailFile)
+
+        verify(gateway).uploadVideo(accessToken, videoUrl, videoFile)
+    }
+
+    @Test
+    fun `given thumbnail error should upload video`() {
+        doReturn(getCredentials()).`when`(credentialsStorage).get(credentialsFile)
+        doReturn("any_refresh_token").`when`(gateway).getRefreshToken(getCredentials())
+        doReturn(accessToken).`when`(gateway).getAccessToken(getCredentialsWithRefreshToken())
+        doReturn(videoUrl).`when`(gateway).createVideo(accessToken, 2971464L, createVideoRequest(videoTitle, videoDescription, videoKeywords, videoCategory))
         val videoId = "MmeMfc8gMZo"
+        doThrow(IllegalStateException("any wtf")).`when`(gateway).uploadThumbnail(accessToken, videoId, thumbnailFile)
 
         uploader.uploadVideo(videoFile, thumbnailFile)
 
