@@ -3,6 +3,8 @@ services:
   vibot-youtube:
     image: jllado-server:5000/vibot/vibot-youtube:latest
     container_name: vibot-youtube
+    volumes:
+      - ${YOUTUBE_SECRET_FILE:-./.youtube_client_secret.json}:/.youtube_client_secret.json
     build: .
     ports:
       - "20000:8080"

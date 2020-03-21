@@ -1,0 +1,8 @@
+FROM openjdk:12-jdk
+LABEL maintainer="jllado@gmail.com"
+RUN mkdir /app
+VOLUME /app
+VOLUME /app/.youtube_client_secret.json
+VOLUME /root/.gradle
+WORKDIR /app
+ENTRYPOINT ["./gradlew", "build", "--no-daemon", "-DupdateTestTimestamps=true"]

@@ -1,0 +1,14 @@
+version: '3'
+services:
+  vibot-youtube-build:
+    container_name: vibot-youtube-build
+    volumes:
+      - ${APP_PATH:-./}:/app
+      - vibot-youtube-build_gradle_dist:/root/.gradle
+      - ${YOUTUBE_SECRET_TEST_FILE:-./.youtube_client_secret.test.json}:/app/.youtube_client_secret.json
+    build:
+      context: .
+      dockerfile: Dockerfile-build
+volumes:
+  vibot-youtube-build_gradle_dist:
+    driver: local

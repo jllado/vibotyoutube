@@ -45,7 +45,7 @@ class YoutubeGatewayIT {
     fun `given auth token should return refresh token`() {
         val refreshToken = gateway.getRefreshToken(getCredentials())
 
-        assertThat(refreshToken, startsWith("2/"))
+        assertThat(refreshToken, startsWith("1/"))
     }
 
     private fun getCredentials() = ObjectMapper().readValue(credentialsFile, ClientSecret::class.java)
