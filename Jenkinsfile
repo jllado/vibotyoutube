@@ -3,9 +3,10 @@ pipeline {
     stages {
         stage ('Build') {
             steps {
-                sh 'export APP_PATH=/opt/servers/jenkins/workspace/vibot-youtube '
-                        + '&& YOUTUBE_SECRET_TEST_FILE=/home/jllado/dev/vibot/.youtube_client_secret.test.json '
-                        + '&& docker-compose -f docker-compose.build.yml up --build --exit-code-from vibot-youtube-build'
+                sh '''export APP_PATH=/opt/servers/jenkins/workspace/vibot-youtube
+                      export YOUTUBE_SECRET_TEST_FILE=/home/jllado/dev/vibot/.youtube_client_secret.test.json
+                      docker-compose -f docker-compose.build.yml up --build --exit-code-from vibot-youtube-build
+                '''
             }
         }
         stage ('Deploy') {
