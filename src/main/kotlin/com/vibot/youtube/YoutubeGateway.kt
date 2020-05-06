@@ -20,6 +20,7 @@ private const val YOUTUBE_UPLOAD_ENDPOINT = "https://www.googleapis.com/upload/y
 @Service
 class YoutubeGateway {
 
+    @Suppress("UNCHECKED_CAST")
     fun getRefreshToken(credentials: ClientSecret): String {
         try {
             val clientId = credentials.installed.clientId
@@ -37,6 +38,7 @@ class YoutubeGateway {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun getAccessToken(credentials: ClientSecret): String {
         try {
             val clientId = credentials.installed.clientId

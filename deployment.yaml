@@ -1,0 +1,47 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: vibot-youtube
+spec:
+  selector:
+    app: vibot-youtube
+  ports:
+    - port: 20000
+      targetPort: 8080
+  type: LoadBalancer
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vibot-youtube
+spec:
+  selector:
+    matchLabels:
+      app: vibot-youtube
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: vibot-youtube
+    spec:
+      containers:
+        - name: vibot-youtube
+          image: jllado-server:5000/vibot/vibot-youtube:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /.youtube_client_secret.json
+              name: youtube-secret-file
+      volumes:
+        - name: youtube-secret-file
+          hostPath:
+            path: /home/jllado/dev/vibot/.youtube_client_secret.test.json
+

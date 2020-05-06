@@ -38,8 +38,8 @@ class YoutubeGatewayIT {
         assertThat(uploadThumbnailResponse.items, hasSize(1))
     }
 
-    //To get auth token
-    //https://accounts.google.com/o/oauth2/auth?client_id=998349629449-pj2ifsp9b61t8lbjpcmea32cjjdoh1c9.apps.googleusercontent.com&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&response_type=code
+    // To get auth token
+    // https://accounts.google.com/o/oauth2/auth?client_id=998349629449-pj2ifsp9b61t8lbjpcmea32cjjdoh1c9.apps.googleusercontent.com&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=https://www.googleapis.com/auth/youtube.upload&response_type=code
     @Ignore("First should get a valid auth token")
     @Test
     fun `given auth token should return refresh token`() {

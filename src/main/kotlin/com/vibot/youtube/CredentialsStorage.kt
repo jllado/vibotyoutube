@@ -18,4 +18,3 @@ class CredentialsStorage {
 }
 
 val credentialsFile = File(".youtube_client_secret.json")
-
