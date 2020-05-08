@@ -43,5 +43,5 @@ spec:
       volumes:
         - name: youtube-secret-file
           hostPath:
-            path: /home/jllado/dev/vibot/.youtube_client_secret.test.json
+            path: /home/jllado/dev/vibot/.youtube_client_secret.json
 
