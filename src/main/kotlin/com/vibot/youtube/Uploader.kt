@@ -1,6 +1,5 @@
 package com.vibot.youtube
 
-
 import com.vibot.youtube.api.CreateVideoRequest
 import com.vibot.youtube.binding.conf.ClientSecret
 import org.slf4j.LoggerFactory
@@ -10,15 +9,21 @@ import java.io.File
 
 @Service
 class Uploader @Autowired constructor(
-        private val gateway: YoutubeGateway,
-        private val credentialStorage: CredentialsStorage
-){
+    private val gateway: YoutubeGateway,
+    private val credentialStorage: CredentialsStorage
+) {
     companion object {
         private val LOGGER = LoggerFactory.getLogger(Uploader::class.java)
     }
 
     lateinit var data: VideoData
 
+    fun createVideo(request: CreateVideoRequest) {
+        data = VideoData(request.title, request.description, request.keywords, request.category)
+        LOGGER.info("Video created: {}", data)
+    }
+
+    @Throws(YoutubeException::class)
     fun uploadVideo(videoFile: File, thumbnailFile: File) {
         val credentials = getCredentials()
         requestRefreshToken(credentials)
@@ -44,11 +49,6 @@ class Uploader @Autowired constructor(
         val response = gateway.uploadVideo(accessToken, videoUrl, videoFile)
         LOGGER.info("Video uploaded")
         return response.id
-    }
-
-    fun createVideo(request: CreateVideoRequest) {
-        data = VideoData(request.title, request.description, request.keywords, request.category)
-        LOGGER.info("Video created: {}", data)
     }
 
     private fun requestRefreshToken(credentials: ClientSecret) {
