@@ -74,16 +74,20 @@ class YoutubeGateway {
             val body = BodyInserters.fromObject(request)
             var headers: ClientResponse.Headers? = null
             val response = client.post().uri(url).body(body).exchange().doOnSuccess { headers = it.headers() }.block()
-            checkCreateVideoResponse(response, accessToken)
+            checkCreateVideoResponse(response!!, headers)
             return headers!!.header("location").first()
         } catch (e: WebClientResponseException) {
             throw buildError(e)
         }
     }
 
-    private fun checkCreateVideoResponse(response: ClientResponse?, accessToken: String) {
-        if (response?.statusCode() != HttpStatus.OK) {
-            LOGGER.info("create video error response: ${response?.toEntity(String::class.java)}, token: $accessToken")
+    private fun checkCreateVideoResponse(response: ClientResponse, headers: ClientResponse.Headers?) {
+        if (response.statusCode() != HttpStatus.OK) {
+            LOGGER.info("youtube video error response: ${response.toEntity(String::class.java)}")
+            headers?.let { header ->
+                val headersText = header.asHttpHeaders().map { "${it.key}: ${it.value}" }.joinToString { ", " }
+                LOGGER.info("youtube     video error headers: $headersText")
+            }
             throw YoutubeException()
         }
     }
