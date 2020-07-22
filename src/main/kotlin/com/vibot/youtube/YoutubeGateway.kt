@@ -3,6 +3,7 @@ package com.vibot.youtube
 import com.vibot.youtube.binding.conf.ClientSecret
 import com.vibot.youtube.binding.request.Create
 import com.vibot.youtube.binding.response.Upload
+import org.slf4j.LoggerFactory
 import org.springframework.core.io.FileSystemResource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -19,6 +20,10 @@ private const val YOUTUBE_UPLOAD_ENDPOINT = "https://www.googleapis.com/upload/y
 
 @Service
 class YoutubeGateway {
+
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(YoutubeGateway::class.java)
+    }
 
     @Suppress("UNCHECKED_CAST")
     fun getRefreshToken(credentials: ClientSecret): String {
@@ -69,15 +74,20 @@ class YoutubeGateway {
             val body = BodyInserters.fromObject(request)
             var headers: ClientResponse.Headers? = null
             val response = client.post().uri(url).body(body).exchange().doOnSuccess { headers = it.headers() }.block()
-            checkCreateVideoResponse(response!!)
+            checkCreateVideoResponse(response!!, headers)
             return headers!!.header("location").first()
         } catch (e: WebClientResponseException) {
             throw buildError(e)
         }
     }
 
-    private fun checkCreateVideoResponse(response: ClientResponse) {
+    private fun checkCreateVideoResponse(response: ClientResponse, headers: ClientResponse.Headers?) {
         if (response.statusCode() != HttpStatus.OK) {
+            LOGGER.error("youtube video error response: ${response.toEntity(String::class.java)}")
+            headers?.let { header ->
+                val headersText = header.asHttpHeaders().map { "${it.key}: ${it.value}" }.joinToString { ", " }
+                LOGGER.error("youtube video error headers: $headersText")
+            }
             throw YoutubeException(response.statusCode())
         }
     }
